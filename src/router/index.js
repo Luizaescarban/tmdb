@@ -14,7 +14,7 @@ const routes = [
   {
     path: '/tv',
     name: 'TV',
-    component: () => import('../views/TvView.vue'),
+    component: () => import('../views/NovelaView.vue'),
   },
   {
     path: '/movie/:movieId',

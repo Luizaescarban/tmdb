@@ -7,8 +7,8 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 
-function openTV(tvId) {
-  router.push({ name: 'TVDetails', params: { tvId } });
+function openNovela(novelaId) {
+  router.push({ name: 'NovelaDetails', params: { novelaId } });
 }
 const genreStore = useGenreStore()
 
@@ -23,16 +23,16 @@ const isLoading = ref(false)
 
 onMounted(async () => {
   isLoading.value = true
-  await genreStore.getAllGenres('tv')
+  await genreStore.getAllGenres('novela')
   isLoading.value = false
 })
 
 const tvs = ref([])
 
-const listTvs = async (genreId) => {
+const listNovelas = async (genreId) => {
   genreStore.setCurrentGenreId(genreId);
   isLoading.value = true;
-  const response = await api.get('discover/tv', {
+  const response = await api.get('discover/novela', {
     params: {
       with_genres: genreId,
       language: 'pt-BR',
@@ -50,7 +50,7 @@ const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR')
     <li
       v-for="genre in genreStore.genres"
       :key="genre.id"
-      @click="listTvs(genre.id)"
+      @click="listNovelas(genre.id)"
       class="genre-item"
     >
       {{ genre.name }}
@@ -58,20 +58,20 @@ const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR')
   </ul>
   <loading v-model:active="isLoading" is-full-page />
   <div class="tv-list">
-    <div v-for="tv in tvs" :key="tv.id" class="tv-card">
+    <div v-for="novela in novelas" :key="novela.id" class="tv-card">
       <img
-  :src="`https://image.tmdb.org/t/p/w500${tv.poster_path}`"
+  :src="`https://image.tmdb.org/t/p/w500${novela.poster_path}`"
   :alt="tv.title"
-  @click="openTV(tv.id)"
+  @click="openNovela(novela.id)"
 />
       <div class="tv-details">
-        <p class="tv-title">{{ tv.title }}</p>
-        <p class="tv-release-date">{{ formatDate(tv.release_date) }}</p>
+        <p class="tv-title">{{ novela.title }}</p>
+        <p class="tv-release-date">{{ formatDate(novela.release_date) }}</p>
         <p class="tv-genres">
           <span
-            v-for="genre_id in tv.genre_ids"
+            v-for="genre_id in novela.genre_ids"
             :key="genre_id"
-            @click="listTvs(genre_id)"
+            @click="listNovelas(genre_id)"
             :class="{ active: genre_id === genreStore.currentGenreId }"
           >
             {{ genreStore.getGenreName(genre_id) }}
